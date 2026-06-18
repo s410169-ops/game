@@ -1,0 +1,1284 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Neon Cyber Grid TD</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        orbitron: ['Orbitron', 'sans-serif'],
+                        rajdhani: ['Rajdhani', 'sans-serif'],
+                    },
+                    colors: {
+                        neonpink: '#ff007f',
+                        neoncyan: '#00f0ff',
+                        neonpurple: '#b000ff',
+                        neonlime: '#39ff14',
+                        cyberdark: '#050209',
+                    },
+                    boxShadow: {
+                        'neon-pink': '0 0 15px rgba(255, 0, 127, 0.6)',
+                        'neon-cyan': '0 0 15px rgba(0, 240, 255, 0.6)',
+                        'neon-purple': '0 0 15px rgba(176, 0, 255, 0.6)',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #050209;
+            color: #e2e8f0;
+            overflow-x: hidden;
+        }
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #050209;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #b000ff;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #00f0ff;
+        }
+        /* Neon text and border glowing */
+        .text-glow-pink {
+            text-shadow: 0 0 8px rgba(255, 0, 127, 0.8), 0 0 20px rgba(255, 0, 127, 0.3);
+        }
+        .text-glow-cyan {
+            text-shadow: 0 0 8px rgba(0, 240, 255, 0.8), 0 0 20px rgba(0, 240, 255, 0.3);
+        }
+        .text-glow-purple {
+            text-shadow: 0 0 8px rgba(176, 0, 255, 0.8), 0 0 20px rgba(176, 0, 255, 0.3);
+        }
+        /* Cyber grid dynamic bg effect */
+        .cyber-grid {
+            background-size: 50px 50px;
+            background-image: 
+                linear-gradient(to right, rgba(176, 0, 255, 0.08) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(176, 0, 255, 0.08) 1px, transparent 1px);
+        }
+    </style>
+</head>
+<body class="font-rajdhani min-h-screen flex flex-col justify-between selection:bg-neonpink selection:text-white">
+
+    <!-- Ambient Grid Underlay -->
+    <div class="absolute inset-0 cyber-grid pointer-events-none z-0 opacity-40"></div>
+
+    <!-- Navigation Bar -->
+    <header class="relative z-10 border-b border-purple-900/40 bg-cyberdark/80 backdrop-blur-md">
+        <div class="max-w-6xl mx-auto px-4 py-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-lg bg-gradient-to-tr from-neonpurple to-neoncyan p-[2px] shadow-neon-cyan">
+                    <div class="w-full h-full bg-cyberdark rounded-lg flex items-center justify-center">
+                        <i class="fa-solid fa-shield-halved text-neoncyan text-lg animate-pulse"></i>
+                    </div>
+                </div>
+                <div>
+                    <h1 class="font-orbitron font-extrabold text-2xl tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-neoncyan to-neonpurple text-glow-cyan">
+                        CYBER DEFENDER
+                    </h1>
+                    <p class="text-xs text-purple-400 tracking-widest uppercase">Grid Protocol Defense</p>
+                </div>
+            </div>
+            <nav class="flex items-center gap-6 text-sm font-semibold uppercase tracking-wider text-purple-200">
+                <button onclick="scrollToId('tactical-grid')" class="hover:text-neoncyan transition-colors duration-200">Grid Area</button>
+                <button onclick="scrollToId('databank')" class="hover:text-neonpink transition-colors duration-200">Tech Specs</button>
+                <button onclick="toggleAudio()" id="audio-master-toggle" class="px-3 py-1.5 rounded border border-purple-500/30 hover:border-neoncyan transition-all duration-200 flex items-center gap-2">
+                    <i id="audio-icon" class="fa-solid fa-volume-xmark text-red-500"></i>
+                    <span id="audio-text">Mute</span>
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content Grid -->
+    <main class="relative z-10 flex-grow max-w-6xl mx-auto px-4 py-8 w-full">
+        
+        <!-- Live HUD Panel -->
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+            <div class="bg-purple-950/20 border border-purple-900/60 rounded-xl p-3 backdrop-blur-sm shadow-lg flex items-center gap-3">
+                <div class="p-2.5 rounded-lg bg-neoncyan/10 text-neoncyan"><i class="fa-solid fa-coins text-lg"></i></div>
+                <div>
+                    <span class="text-xs text-purple-400 uppercase tracking-widest block">Credits</span>
+                    <span id="hud-credits" class="font-orbitron text-xl font-bold text-glow-cyan text-neoncyan">200</span>
+                </div>
+            </div>
+            <div class="bg-purple-950/20 border border-purple-900/60 rounded-xl p-3 backdrop-blur-sm shadow-lg flex items-center gap-3">
+                <div class="p-2.5 rounded-lg bg-neonpink/10 text-neonpink"><i class="fa-solid fa-heart text-lg"></i></div>
+                <div>
+                    <span class="text-xs text-purple-400 uppercase tracking-widest block">Core Integrity</span>
+                    <span id="hud-lives" class="font-orbitron text-xl font-bold text-glow-pink text-neonpink">20</span>
+                </div>
+            </div>
+            <div class="bg-purple-950/20 border border-purple-900/60 rounded-xl p-3 backdrop-blur-sm shadow-lg flex items-center gap-3">
+                <div class="p-2.5 rounded-lg bg-neonpurple/10 text-neonpurple"><i class="fa-solid fa-wifi text-lg"></i></div>
+                <div>
+                    <span class="text-xs text-purple-400 uppercase tracking-widest block">Virus Wave</span>
+                    <span id="hud-wave" class="font-orbitron text-xl font-bold text-glow-purple text-neonpurple">1</span>
+                </div>
+            </div>
+            <div class="bg-purple-950/20 border border-purple-900/60 rounded-xl p-3 backdrop-blur-sm shadow-lg flex items-center gap-3">
+                <div class="p-2.5 rounded-lg bg-neonlime/10 text-neonlime"><i class="fa-solid fa-skull-crossbones text-lg"></i></div>
+                <div>
+                    <span class="text-xs text-purple-400 uppercase tracking-widest block">Enemies Left</span>
+                    <span id="hud-enemies" class="font-orbitron text-xl font-bold text-neonlime">0</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tactical Interface Grid -->
+        <div id="tactical-grid" class="grid grid-cols-1 lg:grid-cols-4 gap-8 items-start">
+            
+            <!-- Left Panel: Node Purchasing / Cyber Nodes Selection -->
+            <div class="space-y-4 lg:col-span-1">
+                <div class="bg-purple-950/20 border border-purple-900/60 rounded-2xl p-5 backdrop-blur-sm shadow-xl">
+                    <h2 class="font-orbitron text-md font-bold text-neoncyan mb-4 flex items-center gap-2 text-glow-cyan uppercase">
+                        <i class="fa-solid fa-square-plus animate-bounce"></i> Cyber Nodes
+                    </h2>
+                    
+                    <p class="text-xs text-purple-400 mb-4">Select a defense module and tap an empty gray grid cell on the map to deploy it.</p>
+                    
+                    <div class="space-y-3">
+                        <!-- Laser Node -->
+                        <button onclick="selectTowerType('laser')" id="btn-node-laser" class="w-full p-3 rounded-xl border border-neoncyan/40 bg-neoncyan/5 hover:bg-neoncyan/10 transition-all text-left flex justify-between items-center group shadow-md">
+                            <div>
+                                <span class="font-orbitron font-bold text-sm text-neoncyan block uppercase">Laser turret</span>
+                                <span class="text-xs text-purple-300">Rapid firing light laser</span>
+                            </div>
+                            <span class="font-orbitron font-bold text-neonlime">100 C</span>
+                        </button>
+                        
+                        <!-- Plasma Node -->
+                        <button onclick="selectTowerType('plasma')" id="btn-node-plasma" class="w-full p-3 rounded-xl border border-purple-900 bg-purple-950/20 hover:bg-neonpurple/10 transition-all text-left flex justify-between items-center group">
+                            <div>
+                                <span class="font-orbitron font-bold text-sm text-neonpurple block uppercase">Plasma shell</span>
+                                <span class="text-xs text-purple-300">Splash damage cannon</span>
+                            </div>
+                            <span class="font-orbitron font-bold text-neonlime">175 C</span>
+                        </button>
+
+                        <!-- EMP Node -->
+                        <button onclick="selectTowerType('emp')" id="btn-node-emp" class="w-full p-3 rounded-xl border border-purple-900 bg-purple-950/20 hover:bg-neonpink/10 transition-all text-left flex justify-between items-center group">
+                            <div>
+                                <span class="font-orbitron font-bold text-sm text-neonpink block uppercase">EMP Sub-system</span>
+                                <span class="text-xs text-purple-300">Slows approaching packets</span>
+                            </div>
+                            <span class="font-orbitron font-bold text-neonlime">150 C</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Action Pad and Diagnostics -->
+                <div class="bg-purple-950/20 border border-purple-900/60 rounded-2xl p-5 backdrop-blur-sm shadow-xl space-y-4">
+                    <h2 class="font-orbitron text-xs font-bold text-purple-300 uppercase tracking-widest">
+                        Diagnostics & Action
+                    </h2>
+                    
+                    <button onclick="startNextWave()" id="btn-wave" class="w-full py-3.5 font-orbitron font-bold tracking-widest bg-gradient-to-r from-neoncyan to-neonpurple text-white rounded-xl shadow-neon-pink transform active:scale-95 transition-all text-center uppercase">
+                        Launch Threat Wave
+                    </button>
+
+                    <div id="selected-node-info" class="border-t border-purple-900/50 pt-3 text-xs space-y-2 hidden">
+                        <span class="text-purple-400 block font-bold uppercase">Node Selection Details</span>
+                        <div class="flex justify-between">
+                            <span class="text-purple-300">Type:</span>
+                            <span id="selected-node-type" class="font-orbitron font-bold uppercase text-neoncyan">-</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-purple-300">Level:</span>
+                            <span id="selected-node-level" class="font-orbitron font-bold text-white">-</span>
+                        </div>
+                        <div class="grid grid-cols-2 gap-2 mt-3 pt-2 border-t border-purple-900/30">
+                            <button onclick="upgradeSelectedTower()" class="py-2 bg-neonlime/10 border border-neonlime text-neonlime font-orbitron font-bold rounded hover:bg-neonlime/20">Upgrade</button>
+                            <button onclick="sellSelectedTower()" class="py-2 bg-neonpink/10 border border-neonpink text-neonpink font-orbitron font-bold rounded hover:bg-neonpink/20">Deconstruct</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Panel: Core Game Area (Grid Canvas) -->
+            <div class="lg:col-span-3 space-y-4">
+                
+                <!-- Game Canvas container box -->
+                <div class="relative w-full aspect-[16/10] bg-[#05020c] border-2 border-purple-900 rounded-2xl overflow-hidden shadow-2xl focus:outline-none" tabindex="0" id="game-container">
+                    
+                    <!-- HTML Canvas -->
+                    <canvas id="game-canvas" class="w-full h-full block bg-cyberdark"></canvas>
+
+                    <!-- Overlay: Start screen menu -->
+                    <div id="start-screen" class="absolute inset-0 bg-black/90 backdrop-blur-sm flex flex-col items-center justify-center p-6 text-center transition-all duration-300">
+                        <div class="max-w-md space-y-6">
+                            <div class="w-16 h-16 mx-auto rounded-full bg-neoncyan/10 border border-neoncyan/40 flex items-center justify-center text-neoncyan text-2xl animate-pulse">
+                                <i class="fa-solid fa-shield-halved"></i>
+                            </div>
+                            <h2 class="font-orbitron font-black text-3xl md:text-5xl tracking-widest text-transparent bg-clip-text bg-gradient-to-r from-neoncyan to-neonpurple text-glow-cyan animate-pulse">
+                                CODESEC SECURE
+                            </h2>
+                            <p class="text-purple-300 text-sm md:text-base">
+                                Build active firewall defensive towers. Stop threat streams from infecting the central core interface at the end of the line.
+                            </p>
+
+                            <button onclick="startGame()" class="px-8 py-4 font-orbitron font-bold text-lg tracking-widest bg-gradient-to-r from-neoncyan to-neonpink hover:from-neoncyan hover:to-neoncyan text-white rounded-xl shadow-neon-pink transform hover:-translate-y-1 transition-all duration-300 uppercase">
+                                Activate Defense
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Overlay: Game Over Screen -->
+                    <div id="gameover-screen" class="absolute inset-0 bg-black/90 backdrop-blur-md flex flex-col items-center justify-center p-6 text-center transition-all duration-300 hidden">
+                        <div class="max-w-md space-y-6">
+                            <h2 class="font-orbitron font-black text-4xl md:text-6xl tracking-widest text-neonpink text-glow-pink animate-bounce">
+                                SYSTEM CORRUPTED
+                            </h2>
+                            <p class="text-purple-300 text-sm md:text-base">
+                                Security wall collapsed. Core memory integrity has dropped below standard.
+                            </p>
+                            
+                            <div class="bg-purple-950/40 border border-purple-900/80 p-4 rounded-xl max-w-xs mx-auto grid grid-cols-2 gap-4">
+                                <div>
+                                    <span class="text-xs text-purple-400 block uppercase tracking-wider">Final Wave</span>
+                                    <span id="final-wave" class="font-orbitron text-xl font-bold text-neoncyan">1</span>
+                                </div>
+                                <div>
+                                    <span class="text-xs text-purple-400 block uppercase tracking-wider">High Score</span>
+                                    <span id="final-high" class="font-orbitron text-xl font-bold text-neonpink">1</span>
+                                </div>
+                            </div>
+
+                            <div class="flex flex-col sm:flex-row justify-center gap-4">
+                                <button onclick="startGame()" class="px-6 py-3 font-orbitron font-bold tracking-widest bg-neoncyan text-cyberdark rounded-lg shadow-neon-cyan hover:bg-neoncyan/80 transform hover:-translate-y-0.5 transition-all">
+                                    Re-Initiate System
+                                </button>
+                                <button onclick="resetGameToMenu()" class="px-6 py-3 font-orbitron font-bold tracking-widest border border-purple-700 text-purple-300 rounded-lg hover:bg-purple-950/50 transition-all">
+                                    Main Interface
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Custom Terminal Logs Panel -->
+                <div class="bg-purple-950/10 border border-purple-900/30 rounded-xl p-4 text-xs font-mono text-purple-300 flex flex-col md:flex-row justify-between items-center gap-4">
+                    <div class="flex items-center gap-2">
+                        <span class="w-2.5 h-2.5 rounded-full bg-neonlime animate-ping"></span>
+                        <span id="terminal-text">System operating smoothly... Waiting for threat packet signals...</span>
+                    </div>
+                    <div class="flex gap-4">
+                        <span class="text-neonpink">Defensive Nodes deployed: <span id="log-count-nodes" class="font-bold">0</span></span>
+                        <span class="text-neoncyan">Core memory: <span id="log-count-memory" class="font-bold">100%</span></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section: Threat Databank -->
+        <section id="databank" class="mt-16 pt-12 border-t border-purple-900/40">
+            <div class="text-center max-w-xl mx-auto mb-10">
+                <h2 class="font-orbitron text-2xl md:text-3xl font-bold tracking-widest text-glow-cyan text-neoncyan mb-2 uppercase">
+                    Defensive Node Databank
+                </h2>
+                <p class="text-purple-300 text-sm">Deploy specialized cybersecurity node arrays to disrupt oncoming cyber threats.</p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Node 1 -->
+                <div class="bg-purple-950/20 border border-purple-900/50 rounded-2xl p-6 hover:border-neoncyan transition-all duration-300 group">
+                    <div class="w-12 h-12 rounded-lg bg-neoncyan/10 border border-neoncyan/30 flex items-center justify-center mb-4 text-neoncyan group-hover:scale-110 transition-transform">
+                        <i class="fa-solid fa-bolt text-xl"></i>
+                    </div>
+                    <h3 class="font-orbitron font-bold text-white mb-2 uppercase">Laser Array Node</h3>
+                    <p class="text-purple-400 text-sm leading-relaxed">
+                        Rapid firing, steady-stream damage processor. Excellent for taking down light, fast packets like Bits. Focuses on singular targets efficiently.
+                    </p>
+                </div>
+                <!-- Node 2 -->
+                <div class="bg-purple-950/20 border border-purple-900/50 rounded-2xl p-6 hover:border-neonpurple transition-all duration-300 group">
+                    <div class="w-12 h-12 rounded-lg bg-neonpurple/10 border border-neonpurple/30 flex items-center justify-center mb-4 text-neonpurple group-hover:scale-110 transition-transform">
+                        <i class="fa-solid fa-burst text-xl"></i>
+                    </div>
+                    <h3 class="font-orbitron font-bold text-white mb-2 uppercase">Plasma Shell Node</h3>
+                    <p class="text-purple-400 text-sm leading-relaxed">
+                        Deploys dense high-impact energy spheres. Releasing highly concentrated shockwaves that cause area-of-effect damage to adjacent clusters of threats.
+                    </p>
+                </div>
+                <!-- Node 3 -->
+                <div class="bg-purple-950/20 border border-purple-900/50 rounded-2xl p-6 hover:border-neonpink transition-all duration-300 group">
+                    <div class="w-12 h-12 rounded-lg bg-neonpink/10 border border-neonpink/30 flex items-center justify-center mb-4 text-neonpink group-hover:scale-110 transition-transform">
+                        <i class="fa-solid fa-tower-broadcast text-xl"></i>
+                    </div>
+                    <h3 class="font-orbitron font-bold text-white mb-2 uppercase">EMP Disruptor Node</h3>
+                    <p class="text-purple-400 text-sm leading-relaxed">
+                        Emits magnetic feedback signals that slow incoming threat movement packets by up to 50%. Essential for buying time on critical junction lanes.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="relative z-10 border-t border-purple-900/40 bg-cyberdark py-8 mt-16 text-center text-purple-400 text-sm">
+        <div class="max-w-6xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <p>&copy; 2026 Cyber Defender Tower Defense. Protect and monitor your digital infrastructure.</p>
+            <div class="flex gap-4 text-lg">
+                <a href="#" class="hover:text-neonpink transition-colors"><i class="fa-brands fa-github"></i></a>
+                <a href="#" class="hover:text-neoncyan transition-colors"><i class="fa-brands fa-twitter"></i></a>
+                <a href="#" class="hover:text-neonpurple transition-colors"><i class="fa-brands fa-discord"></i></a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Game Engine Logic & Audio Scripts -->
+    <script>
+        // --- Web Audio Engine (Procedural synth) ---
+        let audioCtx = null;
+        let isAudioMuted = true;
+        let masterGain = null;
+        let bgmOsc = null;
+
+        function initAudio() {
+            if (audioCtx) return;
+            try {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                masterGain = audioCtx.createGain();
+                masterGain.connect(audioCtx.destination);
+                masterGain.gain.setValueAtTime(isAudioMuted ? 0 : 0.2, audioCtx.currentTime);
+                startCoreBgm();
+            } catch (e) {
+                console.error("Audio engine context failure: ", e);
+            }
+        }
+
+        function toggleAudio() {
+            isAudioMuted = !isAudioMuted;
+            const icon = document.getElementById('audio-icon');
+            const text = document.getElementById('audio-text');
+            
+            if (isAudioMuted) {
+                icon.className = "fa-solid fa-volume-xmark text-red-500";
+                text.textContent = "Mute";
+                if (masterGain) {
+                    masterGain.gain.setValueAtTime(0, audioCtx.currentTime);
+                }
+            } else {
+                initAudio();
+                icon.className = "fa-solid fa-volume-high text-neoncyan text-glow-cyan animate-pulse";
+                text.textContent = "Unmuted";
+                if (masterGain && audioCtx) {
+                    if (audioCtx.state === 'suspended') {
+                        audioCtx.resume();
+                    }
+                    masterGain.gain.setValueAtTime(0.2, audioCtx.currentTime);
+                }
+            }
+        }
+
+        function playSound(type) {
+            if (!audioCtx || isAudioMuted) return;
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+
+            const time = audioCtx.currentTime;
+            
+            switch (type) {
+                case 'laser':
+                    // Short cyber laser beep
+                    const oscL = audioCtx.createOscillator();
+                    const gainL = audioCtx.createGain();
+                    oscL.type = 'sawtooth';
+                    oscL.frequency.setValueAtTime(800, time);
+                    oscL.frequency.exponentialRampToValueAtTime(100, time + 0.08);
+                    gainL.gain.setValueAtTime(0.08, time);
+                    gainL.gain.exponentialRampToValueAtTime(0.001, time + 0.08);
+                    oscL.connect(gainL);
+                    gainL.connect(masterGain);
+                    oscL.start(time);
+                    oscL.stop(time + 0.08);
+                    break;
+                case 'plasma':
+                    // Slow, heavy explosion blast
+                    const oscP = audioCtx.createOscillator();
+                    const gainP = audioCtx.createGain();
+                    oscP.type = 'triangle';
+                    oscP.frequency.setValueAtTime(180, time);
+                    oscP.frequency.linearRampToValueAtTime(40, time + 0.35);
+                    gainP.gain.setValueAtTime(0.25, time);
+                    gainP.gain.exponentialRampToValueAtTime(0.001, time + 0.35);
+                    oscP.connect(gainP);
+                    gainP.connect(masterGain);
+                    oscP.start(time);
+                    oscP.stop(time + 0.35);
+                    break;
+                case 'emp':
+                    // Magnetic feedback ring sweep
+                    const oscE = audioCtx.createOscillator();
+                    const gainE = audioCtx.createGain();
+                    oscE.type = 'sine';
+                    oscE.frequency.setValueAtTime(400, time);
+                    oscE.frequency.exponentialRampToValueAtTime(900, time + 0.25);
+                    gainE.gain.setValueAtTime(0.12, time);
+                    gainE.gain.exponentialRampToValueAtTime(0.001, time + 0.25);
+                    oscE.connect(gainE);
+                    gainE.connect(masterGain);
+                    oscE.start(time);
+                    oscE.stop(time + 0.25);
+                    break;
+                case 'explosion':
+                    // Crunch explosion sweep
+                    const oscEx = audioCtx.createOscillator();
+                    const gainEx = audioCtx.createGain();
+                    oscEx.type = 'square';
+                    oscEx.frequency.setValueAtTime(140, time);
+                    oscEx.frequency.linearRampToValueAtTime(10, time + 0.15);
+                    gainEx.gain.setValueAtTime(0.15, time);
+                    gainEx.gain.exponentialRampToValueAtTime(0.001, time + 0.15);
+                    oscEx.connect(gainEx);
+                    gainEx.connect(masterGain);
+                    oscEx.start(time);
+                    oscEx.stop(time + 0.15);
+                    break;
+                case 'damage':
+                    // Base hit buzzer alert
+                    const oscD = audioCtx.createOscillator();
+                    const gainD = audioCtx.createGain();
+                    oscD.type = 'sawtooth';
+                    oscD.frequency.setValueAtTime(100, time);
+                    oscD.frequency.setValueAtTime(80, time + 0.1);
+                    gainD.gain.setValueAtTime(0.25, time);
+                    gainD.gain.exponentialRampToValueAtTime(0.001, time + 0.3);
+                    oscD.connect(gainD);
+                    gainD.connect(masterGain);
+                    oscD.start(time);
+                    oscD.stop(time + 0.3);
+                    break;
+                case 'build':
+                    // Construct bip code
+                    const oscB = audioCtx.createOscillator();
+                    const gainB = audioCtx.createGain();
+                    oscB.type = 'sine';
+                    oscB.frequency.setValueAtTime(600, time);
+                    oscB.frequency.setValueAtTime(900, time + 0.08);
+                    gainB.gain.setValueAtTime(0.1, time);
+                    gainB.gain.exponentialRampToValueAtTime(0.001, time + 0.16);
+                    oscB.connect(gainB);
+                    gainB.connect(masterGain);
+                    oscB.start(time);
+                    oscB.stop(time + 0.16);
+                    break;
+            }
+        }
+
+        // Ambient cyber theme track
+        function startCoreBgm() {
+            if (!audioCtx) return;
+            const time = audioCtx.currentTime;
+            
+            bgmOsc = audioCtx.createOscillator();
+            bgmOsc.type = 'triangle';
+            bgmOsc.frequency.setValueAtTime(55, time); // A1 baseline
+            
+            const bgmGain = audioCtx.createGain();
+            bgmGain.gain.setValueAtTime(0.05, time);
+
+            bgmOsc.connect(bgmGain);
+            bgmGain.connect(masterGain);
+            bgmOsc.start(time);
+
+            // Shift chords rhythmically
+            let chords = [55.00, 65.41, 48.99, 58.27]; // A1, C2, G1, A#1
+            let noteIdx = 0;
+            setInterval(() => {
+                if (audioCtx && !isAudioMuted) {
+                    noteIdx = (noteIdx + 1) % chords.length;
+                    bgmOsc.frequency.setValueAtTime(chords[noteIdx], audioCtx.currentTime);
+                }
+            }, 3000);
+        }
+
+        function scrollToId(id) {
+            document.getElementById(id).scrollIntoView({ behavior: 'smooth' });
+        }
+    </script>
+
+    <script>
+        // --- Tower Defense System Mechanics ---
+        const canvas = document.getElementById('game-canvas');
+        const ctx = canvas.getContext('2d');
+        const container = document.getElementById('game-container');
+
+        // Config Grid specs
+        const cols = 16;
+        const rows = 10;
+        let cellW = 0;
+        let cellH = 0;
+
+        // Waypoint coordinates representing S-shape route path (relative to grid scale)
+        const waypoints = [
+            {col: 0, row: 2},
+            {col: 4, row: 2},
+            {col: 4, row: 7},
+            {col: 9, row: 7},
+            {col: 9, row: 3},
+            {col: 14, row: 3},
+            {col: 14, row: 9},
+            {col: 15, row: 9}
+        ];
+
+        // Derived list of actual pathway grid cell points so we block tower placement on them
+        let pathGridCells = [];
+
+        function calculatePathGridCells() {
+            pathGridCells = [];
+            for (let i = 0; i < waypoints.length - 1; i++) {
+                let start = waypoints[i];
+                let end = waypoints[i + 1];
+                
+                let minCol = Math.min(start.col, end.col);
+                let maxCol = Math.max(start.col, end.col);
+                let minRow = Math.min(start.row, end.row);
+                let maxRow = Math.max(start.row, end.row);
+
+                for (let c = minCol; c <= maxCol; c++) {
+                    for (let r = minRow; r <= maxRow; r++) {
+                        let key = `${c},${r}`;
+                        if (!pathGridCells.includes(key)) {
+                            pathGridCells.push(key);
+                        }
+                    }
+                }
+            }
+        }
+        calculatePathGridCells();
+
+        // --- Game Logic States ---
+        let gameState = 'menu';
+        let credits = 200;
+        let lives = 20;
+        let wave = 1;
+        let maxWavesLimit = 50;
+        let highScore = localStorage.getItem('td_highwave') || 1;
+
+        let towers = [];
+        let enemies = [];
+        let projectiles = [];
+        let particles = [];
+
+        let lastTime = 0;
+        let selectedTowerType = 'laser'; // Active selection when placing
+        let selectedTowerInstance = null; // Used for upgrades and details inspect
+
+        // Tower Specification Metadata
+        const towerSpecs = {
+            laser: {
+                title: 'Laser Turret',
+                cost: 100,
+                range: 120,
+                damage: 1.2,
+                rateOfFire: 100, // Milliseconds delay
+                color: '#00f0ff',
+                projectileSpeed: 8
+            },
+            plasma: {
+                title: 'Plasma Cannon',
+                cost: 175,
+                range: 180,
+                damage: 12,
+                rateOfFire: 1200,
+                color: '#b000ff',
+                projectileSpeed: 4
+            },
+            emp: {
+                title: 'EMP System',
+                cost: 150,
+                range: 110,
+                damage: 0.1,
+                rateOfFire: 800,
+                color: '#ff007f',
+                projectileSpeed: 6
+            }
+        };
+
+        // UI Selector
+        function selectTowerType(type) {
+            selectedTowerType = type;
+            selectedTowerInstance = null;
+            document.getElementById('selected-node-info').classList.add('hidden');
+
+            // Toggle active style buttons
+            ['laser', 'plasma', 'emp'].forEach(t => {
+                const btn = document.getElementById(`btn-node-${t}`);
+                if (t === type) {
+                    btn.className = `w-full p-3 rounded-xl border border-${towerSpecs[t].color === '#ff007f' ? 'neonpink' : towerSpecs[t].color === '#00f0ff' ? 'neoncyan' : 'neonpurple'} bg-${t}/10 hover:bg-opacity-20 transition-all text-left flex justify-between items-center group shadow-md`;
+                } else {
+                    btn.className = 'w-full p-3 rounded-xl border border-purple-900 bg-purple-950/20 hover:bg-opacity-10 transition-all text-left flex justify-between items-center group';
+                }
+            });
+            writeLog(`Primary node blueprints swapped to ${towerSpecs[type].title}.`);
+        }
+
+        // Resize function coordinates grid bounds dynamic scale
+        function resizeCanvas() {
+            canvas.width = 800;
+            canvas.height = 500;
+            cellW = canvas.width / cols;
+            cellH = canvas.height / rows;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        // Canvas touch coordinates converter helper
+        function getCanvasGridPos(e) {
+            const rect = canvas.getBoundingClientRect();
+            let clientX, clientY;
+            if (e.touches && e.touches.length > 0) {
+                clientX = e.touches[0].clientX;
+                clientY = e.touches[0].clientY;
+            } else {
+                clientX = e.clientX;
+                clientY = e.clientY;
+            }
+
+            // Map responsive bounding box position down onto accurate internal resolution matrix scale
+            const x = ((clientX - rect.left) / rect.width) * canvas.width;
+            const y = ((clientY - rect.top) / rect.height) * canvas.height;
+
+            const col = Math.floor(x / cellW);
+            const row = Math.floor(y / cellH);
+            return { col, row, x, y };
+        }
+
+        // Setup mouse / touch click listeners
+        canvas.addEventListener('click', handleGridAction);
+        canvas.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            handleGridAction(e);
+        });
+
+        // Event listener orchestrates grid mechanics (deploy/upgrade selection)
+        function handleGridAction(e) {
+            if (gameState !== 'playing') return;
+            initAudio(); // Initialize audio context on touch action
+
+            const gridPos = getCanvasGridPos(e);
+            if (gridPos.col < 0 || gridPos.col >= cols || gridPos.row < 0 || gridPos.row >= rows) return;
+
+            const gridKey = `${gridPos.col},${gridPos.row}`;
+            const existingTower = towers.find(t => t.col === gridPos.col && t.row === gridPos.row);
+
+            if (existingTower) {
+                // Select existing node to inspect details / prepare upgrades
+                selectedTowerInstance = existingTower;
+                showTowerSpecsUI(existingTower);
+            } else {
+                // Check if grid coordinates collide with S-shape routing line
+                if (pathGridCells.includes(gridKey)) {
+                    writeLog("ERROR: Deploy target overlaps threat path lanes directly!");
+                    return;
+                }
+
+                // Buy and deploy new tower node
+                const spec = towerSpecs[selectedTowerType];
+                if (credits >= spec.cost) {
+                    credits -= spec.cost;
+                    updateHUD();
+                    
+                    towers.push({
+                        col: gridPos.col,
+                        row: gridPos.row,
+                        type: selectedTowerType,
+                        level: 1,
+                        spec: JSON.parse(JSON.stringify(spec)), // Deep clone properties
+                        lastFired: 0
+                    });
+
+                    playSound('build');
+                    createSparks(gridPos.col * cellW + cellW/2, gridPos.row * cellH + cellH/2, spec.color);
+                    writeLog(`DEPLOY: Active ${spec.title} module calibrated at Grid: [${gridPos.col}, ${gridPos.row}].`);
+                } else {
+                    writeLog("ERROR: Insufficient data credits payload on hand.");
+                    playSound('damage');
+                }
+            }
+        }
+
+        // Show upgrade / sell menu sidebar
+        function showTowerSpecsUI(tower) {
+            const specPanel = document.getElementById('selected-node-info');
+            specPanel.classList.remove('hidden');
+
+            document.getElementById('selected-node-type').textContent = `${tower.spec.title}`;
+            document.getElementById('selected-node-level').textContent = `Lvl ${tower.level}`;
+            document.getElementById('selected-node-type').style.color = tower.spec.color;
+        }
+
+        function upgradeSelectedTower() {
+            if (!selectedTowerInstance) return;
+            const upgradeCost = Math.floor(selectedTowerInstance.spec.cost * 0.8 * selectedTowerInstance.level);
+
+            if (credits >= upgradeCost) {
+                credits -= upgradeCost;
+                selectedTowerInstance.level++;
+                // Scale values
+                selectedTowerInstance.spec.damage *= 1.4;
+                selectedTowerInstance.spec.range *= 1.15;
+                selectedTowerInstance.spec.rateOfFire *= 0.9; // Lower fire gap is faster
+                
+                playSound('build');
+                createSparks(selectedTowerInstance.col * cellW + cellW/2, selectedTowerInstance.row * cellH + cellH/2, selectedTowerInstance.spec.color);
+                writeLog(`UPGRADE: ${selectedTowerInstance.spec.title} scaled to level ${selectedTowerInstance.level}!`);
+                
+                updateHUD();
+                showTowerSpecsUI(selectedTowerInstance);
+            } else {
+                writeLog("ERROR: Not enough credits available to upgrade node.");
+                playSound('damage');
+            }
+        }
+
+        function sellSelectedTower() {
+            if (!selectedTowerInstance) return;
+            const refundValue = Math.floor(selectedTowerInstance.spec.cost * 0.5 * selectedTowerInstance.level);
+            
+            credits += refundValue;
+            // Remove selection
+            towers = towers.filter(t => t !== selectedTowerInstance);
+            playSound('explosion');
+
+            writeLog(`DECONSTRUCT: Disassembled node. Refunded +${refundValue} credits.`);
+            
+            selectedTowerInstance = null;
+            document.getElementById('selected-node-info').classList.add('hidden');
+            updateHUD();
+        }
+
+        // HUD Synchronizer
+        function updateHUD() {
+            document.getElementById('hud-credits').textContent = credits;
+            document.getElementById('hud-lives').textContent = lives;
+            document.getElementById('hud-wave').textContent = wave;
+            document.getElementById('hud-enemies').textContent = enemies.length;
+            document.getElementById('log-count-nodes').textContent = towers.length;
+
+            const percentage = Math.max(0, Math.floor((lives / 20) * 100));
+            document.getElementById('log-count-memory').textContent = `${percentage}%`;
+        }
+
+        function writeLog(text) {
+            document.getElementById('terminal-text').textContent = text;
+        }
+
+        // Start Core Engine States
+        function startGame() {
+            initAudio();
+            if (audioCtx && audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+
+            document.getElementById('start-screen').classList.add('hidden');
+            document.getElementById('gameover-screen').classList.add('hidden');
+
+            credits = 200;
+            lives = 20;
+            wave = 1;
+
+            towers = [];
+            enemies = [];
+            projectiles = [];
+            particles = [];
+
+            updateHUD();
+            writeLog("TACTICAL SYSTEM ONLINE: Construct first tower defense grid.");
+
+            gameState = 'playing';
+            lastTime = performance.now();
+            requestAnimationFrame(gameLoop);
+        }
+
+        function resetGameToMenu() {
+            gameState = 'menu';
+            document.getElementById('gameover-screen').classList.add('hidden');
+            document.getElementById('start-screen').classList.remove('hidden');
+            document.getElementById('selected-node-info').classList.add('hidden');
+        }
+
+        // Wave Spawner mechanics
+        function startNextWave() {
+            if (gameState !== 'playing') return;
+            if (enemies.length > 0) {
+                writeLog("TACTICAL WAIT: Clear current viral threat stream first!");
+                return;
+            }
+
+            writeLog(`LAUNCH ALERT: Threat wave stream #${wave} synchronized. Deploying incoming malware...`);
+            playSound('emp');
+
+            // Generate customized enemy templates proportional to wave values
+            let enemyCount = 5 + wave * 2;
+            let spawnDelayGap = Math.max(200, 1000 - wave * 40);
+
+            for (let i = 0; i < enemyCount; i++) {
+                setTimeout(() => {
+                    if (gameState !== 'playing') return;
+                    
+                    let rand = Math.random();
+                    let eType = 'bit';
+                    let health = 15 + wave * 6;
+                    let speed = 1.0 + Math.min(1.5, wave * 0.05);
+                    let colValue = '#39ff14'; // Green
+                    let reward = 15;
+
+                    if (rand > 0.75) {
+                        eType = 'trojan';
+                        health = 60 + wave * 18;
+                        speed = 0.5 + Math.min(0.5, wave * 0.02);
+                        colValue = '#ff007f'; // Pink
+                        reward = 40;
+                    } else if (rand > 0.4) {
+                        eType = 'byte';
+                        health = 30 + wave * 10;
+                        speed = 0.8 + Math.min(1.0, wave * 0.04);
+                        colValue = '#00f0ff'; // Cyan
+                        reward = 25;
+                    }
+
+                    enemies.push({
+                        type: eType,
+                        health: health,
+                        maxHealth: health,
+                        speed: speed,
+                        reward: reward,
+                        color: colValue,
+                        waypointIndex: 0,
+                        // Set current x, y position in center coordinates of starting waypoint cell
+                        x: waypoints[0].col * cellW + cellW / 2,
+                        y: waypoints[0].row * cellH + cellH / 2,
+                        slowMultiplier: 1.0,
+                        slowTimer: 0
+                    });
+
+                    updateHUD();
+                }, i * spawnDelayGap);
+            }
+        }
+
+        function createSparks(x, y, color) {
+            for (let i = 0; i < 12; i++) {
+                particles.push({
+                    x: x,
+                    y: y,
+                    vx: (Math.random() - 0.5) * 4,
+                    vy: (Math.random() - 0.5) * 4,
+                    alpha: 1,
+                    decay: Math.random() * 0.04 + 0.02,
+                    color: color
+                });
+            }
+        }
+
+        // Main game frame loop logic
+        function gameLoop(timestamp) {
+            if (gameState !== 'playing') return;
+
+            let dt = timestamp - lastTime;
+            if (!dt || dt > 100) dt = 16.66;
+            lastTime = timestamp;
+
+            update(dt);
+            render();
+
+            requestAnimationFrame(gameLoop);
+        }
+
+        // --- Core System Physics & Physics Frame Updates ---
+        function update(dt) {
+            const timeAdjust = dt / 16.66;
+
+            // Handle particle decay list
+            for (let i = particles.length - 1; i >= 0; i--) {
+                let p = particles[i];
+                p.x += p.vx * timeAdjust;
+                p.y += p.vy * timeAdjust;
+                p.alpha -= p.decay * timeAdjust;
+                if (p.alpha <= 0) particles.splice(i, 1);
+            }
+
+            // Target search & shoot checks across defensive towers
+            towers.forEach(tower => {
+                const tx = tower.col * cellW + cellW / 2;
+                const ty = tower.row * cellH + cellH / 2;
+
+                // Find active enemies inside weapon range grid circle
+                let validTargets = enemies.filter(enemy => {
+                    const dist = Math.hypot(enemy.x - tx, enemy.y - ty);
+                    return dist <= tower.spec.range;
+                });
+
+                if (validTargets.length > 0) {
+                    // Target first enemy that has made progress on waypoint line indexes
+                    let target = validTargets.sort((a, b) => b.waypointIndex - a.waypointIndex)[0];
+                    
+                    const now = performance.now();
+                    if (now - tower.lastFired >= tower.spec.rateOfFire) {
+                        tower.lastFired = now;
+                        playSound(tower.type);
+
+                        if (tower.type === 'laser') {
+                            // Immediate line trace projectile hitting enemy
+                            target.health -= tower.spec.damage;
+                            createSparks(target.x, target.y, tower.spec.color);
+                            projectiles.push({
+                                type: 'beam',
+                                sx: tx, sy: ty,
+                                ex: target.x, ey: target.y,
+                                color: tower.spec.color,
+                                lifetime: 6
+                            });
+                        } else if (tower.type === 'plasma') {
+                            // Spawn explosive sphere
+                            projectiles.push({
+                                type: 'plasma-bullet',
+                                x: tx, y: ty,
+                                target: target,
+                                speed: tower.spec.projectileSpeed,
+                                damage: tower.spec.damage,
+                                splash: 70,
+                                color: tower.spec.color
+                            });
+                        } else if (tower.type === 'emp') {
+                            // Static EMP burst slows down enemy target progress
+                            target.health -= tower.spec.damage;
+                            target.slowMultiplier = 0.45;
+                            target.slowTimer = 120; // Frames count
+                            
+                            projectiles.push({
+                                type: 'emp-blast',
+                                x: tx, y: ty,
+                                radius: 0,
+                                maxRadius: tower.spec.range,
+                                color: tower.spec.color,
+                                speed: 6
+                            });
+                        }
+                    }
+                }
+            });
+
+            // Handle Projectiles update logic
+            for (let i = projectiles.length - 1; i >= 0; i--) {
+                let proj = projectiles[i];
+                if (proj.type === 'beam') {
+                    proj.lifetime -= timeAdjust;
+                    if (proj.lifetime <= 0) projectiles.splice(i, 1);
+                } else if (proj.type === 'emp-blast') {
+                    proj.radius += proj.speed * timeAdjust;
+                    if (proj.radius >= proj.maxRadius) projectiles.splice(i, 1);
+                } else if (proj.type === 'plasma-bullet') {
+                    // Chase target coordinates directly
+                    let dx = proj.target.x - proj.x;
+                    let dy = proj.target.y - proj.y;
+                    let dist = Math.hypot(dx, dy);
+
+                    if (dist < proj.speed * timeAdjust + 5) {
+                        // Deliver radial Splash Impact explosion
+                        enemies.forEach(e => {
+                            let rangeDist = Math.hypot(e.x - proj.x, e.y - proj.y);
+                            if (rangeDist <= proj.splash) {
+                                e.health -= proj.damage;
+                                createSparks(e.x, e.y, proj.color);
+                            }
+                        });
+                        playSound('explosion');
+                        projectiles.splice(i, 1);
+                    } else {
+                        // Slide shell along tracking vector
+                        proj.x += (dx / dist) * proj.speed * timeAdjust;
+                        proj.y += (dy / dist) * proj.speed * timeAdjust;
+                    }
+                }
+            }
+
+            // Handle Enemy Movement mechanics
+            for (let i = enemies.length - 1; i >= 0; i--) {
+                let enemy = enemies[i];
+
+                // Slow timer check down
+                if (enemy.slowTimer > 0) {
+                    enemy.slowTimer -= timeAdjust;
+                    if (enemy.slowTimer <= 0) {
+                        enemy.slowMultiplier = 1.0;
+                    }
+                }
+
+                // Check death conditions
+                if (enemy.health <= 0) {
+                    credits += enemy.reward;
+                    createSparks(enemy.x, enemy.y, enemy.color);
+                    enemies.splice(i, 1);
+                    updateHUD();
+                    continue;
+                }
+
+                // Waypoint progress tracing vector
+                let targetW = waypoints[enemy.waypointIndex + 1];
+                if (!targetW) {
+                    // Reached end of coordinates - Core base damaged!
+                    lives--;
+                    playSound('damage');
+                    enemies.splice(i, 1);
+                    updateHUD();
+                    
+                    if (lives <= 0) {
+                        triggerGameOver();
+                    }
+                    continue;
+                }
+
+                // Translate cell coord space to canvas coordinates
+                let destX = targetW.col * cellW + cellW / 2;
+                let destY = targetW.row * cellH + cellH / 2;
+
+                let dx = destX - enemy.x;
+                let dy = destY - enemy.y;
+                let dist = Math.hypot(dx, dy);
+
+                let actualSpeed = enemy.speed * enemy.slowMultiplier * timeAdjust;
+
+                if (dist <= actualSpeed) {
+                    // Snaps position onto next waypoint segment directly
+                    enemy.x = destX;
+                    enemy.y = destY;
+                    enemy.waypointIndex++;
+                } else {
+                    enemy.x += (dx / dist) * actualSpeed;
+                    enemy.y += (dy / dist) * actualSpeed;
+                }
+            }
+
+            // Auto advance waves when previous wave threat elements are fully cleaned
+            if (enemies.length === 0 && towers.length > 0) {
+                // If the player initiated at least wave 1
+                wave++;
+                updateHUD();
+                startNextWave();
+            }
+        }
+
+        // Trigger Game Over screen overlays
+        function triggerGameOver() {
+            gameState = 'gameover';
+            playSound('damage');
+            
+            if (wave > highScore) {
+                highScore = wave;
+                localStorage.setItem('td_highwave', highScore);
+            }
+
+            document.getElementById('final-wave').textContent = wave;
+            document.getElementById('final-high').textContent = highScore;
+            document.getElementById('gameover-screen').classList.remove('hidden');
+        }
+
+        // --- Render Canvas graphics visuals ---
+        function render() {
+            // Draw slate cyber map backgrounds
+            ctx.fillStyle = '#05020c';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // Draw glowing core target area at final waypoint endpoint
+            const lastW = waypoints[waypoints.length - 1];
+            const endX = lastW.col * cellW + cellW / 2;
+            const endY = lastW.row * cellH + cellH / 2;
+
+            ctx.save();
+            ctx.shadowBlur = 20;
+            ctx.shadowColor = '#ff007f';
+            ctx.fillStyle = 'rgba(255, 0, 127, 0.25)';
+            ctx.beginPath();
+            ctx.arc(endX, endY, cellW * 0.9, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.strokeStyle = '#ff007f';
+            ctx.lineWidth = 2;
+            ctx.stroke();
+            ctx.restore();
+
+            // Trace cyber pathway grid line
+            ctx.save();
+            ctx.shadowBlur = 10;
+            ctx.shadowColor = '#b000ff';
+            ctx.strokeStyle = '#b000ff';
+            ctx.lineWidth = 14;
+            ctx.lineCap = 'round';
+            ctx.lineJoin = 'round';
+            ctx.beginPath();
+
+            waypoints.forEach((w, index) => {
+                let wx = w.col * cellW + cellW / 2;
+                let wy = w.row * cellH + cellH / 2;
+                if (index === 0) ctx.moveTo(wx, wy);
+                else ctx.lineTo(wx, wy);
+            });
+            ctx.stroke();
+            ctx.restore();
+
+            // Draw a subtle inner lane line inside core grid S-Highway
+            ctx.strokeStyle = '#00f0ff';
+            ctx.lineWidth = 2;
+            ctx.stroke();
+
+            // Draw empty grid blocks helper
+            ctx.strokeStyle = 'rgba(176, 0, 255, 0.05)';
+            ctx.lineWidth = 1;
+            for (let c = 0; c < cols; c++) {
+                for (let r = 0; r < rows; r++) {
+                    const gx = c * cellW;
+                    const gy = r * cellH;
+                    ctx.strokeRect(gx, gy, cellW, cellH);
+                }
+            }
+
+            // Draw deployed Defensive node towers
+            towers.forEach(tower => {
+                const tx = tower.col * cellW + cellW / 2;
+                const ty = tower.row * cellH + cellH / 2;
+
+                ctx.save();
+                
+                // Active glow rings around selected nodes
+                if (selectedTowerInstance === tower) {
+                    ctx.strokeStyle = '#39ff14';
+                    ctx.lineWidth = 2;
+                    ctx.beginPath();
+                    ctx.arc(tx, ty, tower.spec.range, 0, Math.PI * 2);
+                    ctx.stroke();
+                }
+
+                // Draw solid metallic base
+                ctx.shadowBlur = 12;
+                ctx.shadowColor = tower.spec.color;
+                ctx.fillStyle = '#140c24';
+                ctx.strokeStyle = tower.spec.color;
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                ctx.arc(tx, ty, cellW * 0.45, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.stroke();
+
+                // Draw central power cyber cores
+                ctx.fillStyle = tower.spec.color;
+                ctx.beginPath();
+                ctx.arc(tx, ty, cellW * 0.2, 0, Math.PI * 2);
+                ctx.fill();
+
+                // Display level badge tag
+                ctx.fillStyle = '#ffffff';
+                ctx.font = 'bold 10px Orbitron';
+                ctx.textAlign = 'center';
+                ctx.fillText(`L${tower.level}`, tx, ty - cellH * 0.5);
+
+                ctx.restore();
+            });
+
+            // Draw incoming threat elements (enemies)
+            enemies.forEach(enemy => {
+                ctx.save();
+                ctx.shadowBlur = 10;
+                ctx.shadowColor = enemy.color;
+                ctx.fillStyle = enemy.color;
+
+                // Draw unique shapes matching enemy type spec
+                ctx.beginPath();
+                if (enemy.type === 'bit') {
+                    // Small cyber triangle
+                    ctx.moveTo(enemy.x, enemy.y - 10);
+                    ctx.lineTo(enemy.x + 10, enemy.y + 10);
+                    ctx.lineTo(enemy.x - 10, enemy.y + 10);
+                } else if (enemy.type === 'byte') {
+                    // Cyber hexagon
+                    for (let s = 0; s < 6; s++) {
+                        let angle = (Math.PI / 3) * s;
+                        let sx = enemy.x + Math.cos(angle) * 12;
+                        let sy = enemy.y + Math.sin(angle) * 12;
+                        if (s === 0) ctx.moveTo(sx, sy);
+                        else ctx.lineTo(sx, sy);
+                    }
+                } else {
+                    // Heavy Trojan diamond
+                    ctx.moveTo(enemy.x, enemy.y - 15);
+                    ctx.lineTo(enemy.x + 15, enemy.y);
+                    ctx.lineTo(enemy.x, enemy.y + 15);
+                    ctx.lineTo(enemy.x - 15, enemy.y);
+                }
+                ctx.closePath();
+                ctx.fill();
+
+                // Draw health status indicator bars above enemies
+                const barW = 24;
+                const barH = 3;
+                const barX = enemy.x - barW / 2;
+                const barY = enemy.y - 20;
+
+                ctx.fillStyle = 'rgba(255, 255, 255, 0.15)';
+                ctx.fillRect(barX, barY, barW, barH);
+
+                const healthPct = Math.max(0, enemy.health / enemy.maxHealth);
+                ctx.fillStyle = enemy.color;
+                ctx.fillRect(barX, barY, barW * healthPct, barH);
+
+                ctx.restore();
+            });
+
+            // Draw visual Projectiles lines
+            projectiles.forEach(proj => {
+                ctx.save();
+                if (proj.type === 'beam') {
+                    ctx.strokeStyle = proj.color;
+                    ctx.lineWidth = 3 * (proj.lifetime / 6);
+                    ctx.beginPath();
+                    ctx.moveTo(proj.sx, proj.sy);
+                    ctx.lineTo(proj.ex, proj.ey);
+                    ctx.stroke();
+                } else if (proj.type === 'emp-blast') {
+                    ctx.strokeStyle = proj.color;
+                    ctx.lineWidth = 1.5;
+                    ctx.beginPath();
+                    ctx.arc(proj.x, proj.y, proj.radius, 0, Math.PI * 2);
+                    ctx.stroke();
+                } else if (proj.type === 'plasma-bullet') {
+                    ctx.shadowBlur = 12;
+                    ctx.shadowColor = proj.color;
+                    ctx.fillStyle = proj.color;
+                    ctx.beginPath();
+                    ctx.arc(proj.x, proj.y, 8, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+                ctx.restore();
+            });
+
+            // Draw visual Sparks lists
+            particles.forEach(p => {
+                ctx.save();
+                ctx.globalAlpha = p.alpha;
+                ctx.fillStyle = p.color;
+                ctx.fillRect(p.x, p.y, 4, 4);
+                ctx.restore();
+            });
+        }
+    </script>
+</body>
+</html>
